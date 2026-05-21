@@ -1,0 +1,6 @@
+@AbsensiApp.API_HostAddress = http://localhost:5168
+
+GET {{AbsensiApp.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

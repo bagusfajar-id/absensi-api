@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="AbsensiApp.API/AbsensiApp.API.csproj" />
+  <Project Path="AbsensiApp.Application/AbsensiApp.Application.csproj" />
+  <Project Path="AbsensiApp.Domain/AbsensiApp.Domain.csproj" />
+  <Project Path="AbsensiApp.Infrastructure/AbsensiApp.Infrastructure.csproj" />
+</Solution>
