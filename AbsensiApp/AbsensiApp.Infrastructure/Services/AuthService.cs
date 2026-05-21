@@ -1,8 +1,6 @@
 ﻿using AbsensiApp.Application.DTOs;
 using AbsensiApp.Application.Interfaces;
 using AbsensiApp.Domain.Entities;
-using AbsensiApp.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -13,23 +11,24 @@ namespace AbsensiApp.Infrastructure.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly AppDbContext _context;
+        private readonly IEmployeeRepository _employeeRepository;
         private readonly IConfiguration _configuration;
 
-        public AuthService(AppDbContext context, IConfiguration configuration)
+        public AuthService(IEmployeeRepository employeeRepository, IConfiguration configuration)
         {
-            _context = context;
+            _employeeRepository = employeeRepository;
             _configuration = configuration;
         }
 
         public async Task<LoginResponseDto> LoginAsync(LoginRequestDto request)
         {
-            var employee = await _context.Employees
-                .Include(e => e.Department)
-                .FirstOrDefaultAsync(e => e.Email == request.Email && e.IsActive);
+            var employee = await _employeeRepository.GetByEmailAsync(request.Email);
 
             if (employee == null || !BCrypt.Net.BCrypt.Verify(request.Password, employee.PasswordHash))
                 throw new UnauthorizedAccessException("Email atau password salah!");
+
+            if (!employee.IsActive)
+                throw new UnauthorizedAccessException("Akun tidak aktif!");
 
             var token = GenerateJwtToken(employee);
 
@@ -50,7 +49,7 @@ namespace AbsensiApp.Infrastructure.Services
                     BasicSalary = employee.BasicSalary,
                     JoinDate = employee.JoinDate,
                     IsActive = employee.IsActive,
-                    DepartmentName = employee.Department.Name
+                    DepartmentName = employee.Department?.Name ?? ""
                 }
             };
         }

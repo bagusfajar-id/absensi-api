@@ -1,6 +1,7 @@
 using AbsensiApp.Application.Interfaces;
-using AbsensiApp.Infrastructure.Services;
 using AbsensiApp.Infrastructure.Data;
+using AbsensiApp.Infrastructure.Repositories;
+using AbsensiApp.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -38,9 +39,14 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
+// Repositories
+builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+
 // Services
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
