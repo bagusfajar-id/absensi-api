@@ -40,6 +40,7 @@ builder.Services.AddAuthorization();
 
 // Services
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
