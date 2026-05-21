@@ -1,36 +1,33 @@
 ﻿using AbsensiApp.Application.DTOs;
 using AbsensiApp.Application.Interfaces;
 using AbsensiApp.Domain.Entities;
-using AbsensiApp.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
 
 namespace AbsensiApp.Infrastructure.Services
 {
     public class DepartmentService : IDepartmentService
     {
-        private readonly AppDbContext _context;
+        private readonly IDepartmentRepository _departmentRepository;
 
-        public DepartmentService(AppDbContext context)
+        public DepartmentService(IDepartmentRepository departmentRepository)
         {
-            _context = context;
+            _departmentRepository = departmentRepository;
         }
 
         public async Task<List<DepartmentResponseDto>> GetAllAsync()
         {
-            return await _context.Departments
-                .Select(d => new DepartmentResponseDto
-                {
-                    Id = d.Id,
-                    Name = d.Name,
-                    Description = d.Description,
-                    CreatedAt = d.CreatedAt
-                })
-                .ToListAsync();
+            var departments = await _departmentRepository.GetAllAsync();
+            return departments.Select(d => new DepartmentResponseDto
+            {
+                Id = d.Id,
+                Name = d.Name,
+                Description = d.Description,
+                CreatedAt = d.CreatedAt
+            }).ToList();
         }
 
         public async Task<DepartmentResponseDto?> GetByIdAsync(Guid id)
         {
-            var department = await _context.Departments.FindAsync(id);
+            var department = await _departmentRepository.GetByIdAsync(id);
             if (department == null) return null;
 
             return new DepartmentResponseDto
@@ -52,8 +49,7 @@ namespace AbsensiApp.Infrastructure.Services
                 CreatedAt = DateTime.UtcNow
             };
 
-            _context.Departments.Add(department);
-            await _context.SaveChangesAsync();
+            await _departmentRepository.CreateAsync(department);
 
             return new DepartmentResponseDto
             {
@@ -66,13 +62,13 @@ namespace AbsensiApp.Infrastructure.Services
 
         public async Task<DepartmentResponseDto?> UpdateAsync(Guid id, DepartmentRequestDto request)
         {
-            var department = await _context.Departments.FindAsync(id);
+            var department = await _departmentRepository.GetByIdAsync(id);
             if (department == null) return null;
 
             department.Name = request.Name;
             department.Description = request.Description;
 
-            await _context.SaveChangesAsync();
+            await _departmentRepository.UpdateAsync(department);
 
             return new DepartmentResponseDto
             {
@@ -85,12 +81,7 @@ namespace AbsensiApp.Infrastructure.Services
 
         public async Task<bool> DeleteAsync(Guid id)
         {
-            var department = await _context.Departments.FindAsync(id);
-            if (department == null) return false;
-
-            _context.Departments.Remove(department);
-            await _context.SaveChangesAsync();
-            return true;
+            return await _departmentRepository.DeleteAsync(id);
         }
     }
 }
