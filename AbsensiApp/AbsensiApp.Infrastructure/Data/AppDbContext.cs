@@ -10,6 +10,9 @@ namespace AbsensiApp.Infrastructure.Data
 
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Department> Departments { get; set; }
+        public DbSet<Attendance> Attendances { get; set; }
+        public DbSet<QrCode> QrCodes { get; set; }
+        public DbSet<OfficeLocation> OfficeLocations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -21,6 +24,11 @@ namespace AbsensiApp.Infrastructure.Data
             modelBuilder.Entity<Employee>()
                 .Property(e => e.Role)
                 .HasConversion<string>();
+
+            modelBuilder.Entity<Attendance>()
+                .HasOne(a => a.Employee)
+                .WithMany()
+                .HasForeignKey(a => a.EmployeeId);
         }
     }
 }
