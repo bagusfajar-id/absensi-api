@@ -45,6 +45,7 @@ builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IAttendanceRepository, AttendanceRepository>();
 builder.Services.AddScoped<IOfficeLocationRepository, OfficeLocationRepository>();
 builder.Services.AddScoped<IQrCodeRepository, QrCodeRepository>();
+builder.Services.AddScoped<IPayrollRepository, PayrollRepository>();
 
 // Services
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -52,6 +53,7 @@ builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IAttendanceService, AttendanceService>();
 builder.Services.AddScoped<IOfficeLocationService, OfficeLocationService>();
+builder.Services.AddScoped<IPayrollService, PayrollService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

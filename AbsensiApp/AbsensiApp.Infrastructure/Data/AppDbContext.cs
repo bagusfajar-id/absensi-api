@@ -13,6 +13,8 @@ namespace AbsensiApp.Infrastructure.Data
         public DbSet<Attendance> Attendances { get; set; }
         public DbSet<QrCode> QrCodes { get; set; }
         public DbSet<OfficeLocation> OfficeLocations { get; set; }
+        public DbSet<Payroll> Payrolls { get; set; }
+        public DbSet<PayrollDetail> PayrollDetails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -29,6 +31,16 @@ namespace AbsensiApp.Infrastructure.Data
                 .HasOne(a => a.Employee)
                 .WithMany()
                 .HasForeignKey(a => a.EmployeeId);
+
+            modelBuilder.Entity<Payroll>()
+                .HasOne(p => p.Employee)
+                .WithMany()
+                .HasForeignKey(p => p.EmployeeId);
+
+            modelBuilder.Entity<PayrollDetail>()
+                .HasOne(pd => pd.Payroll)
+                .WithMany(p => p.PayrollDetails)
+                .HasForeignKey(pd => pd.PayrollId);
         }
     }
 }
